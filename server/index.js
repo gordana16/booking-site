@@ -32,6 +32,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const PORT = process.env.port || "3001";
-app.listen("3001", () => {
+app.listen(PORT, () => {
   console.log("I'm running on port", PORT);
 });
