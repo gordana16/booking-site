@@ -1,0 +1,19 @@
+// .secondary-nav {
+//   width: 100%;
+// }
+.dropdown {
+  .dropdown-item {
+    font-size: 14px;
+
+    &:active {
+      background-color: $main-color;
+    }
+  }
+}
+
+.navbar-brand {
+  img {
+    height: 28px;
+    margin-left: -5px;
+  }
+}

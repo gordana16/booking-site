@@ -1,0 +1,44 @@
+@import "variables.scss";
+@import "header/header.scss";
+@import "rental/rentals.scss";
+@import "rental/rental-detail.scss";
+@import "rental/rental-manage.scss";
+@import "form/form.scss";
+@import "booking/booking.scss";
+// .page-title {
+//   font-size: 30px;
+//   font-weight: 700;
+//   margin-bottom: 20px;
+// }
+.clickable {
+  &:hover {
+    cursor: pointer;
+  }
+}
+.apartment {
+  color: #a72da3;
+}
+
+.house {
+  color: #bf1818;
+}
+
+.condo {
+  color: #d68000;
+}
+
+.btn-bwm {
+  background-color: $main-color;
+  border-color: $main-color;
+  color: white;
+  padding: 5px 20px;
+  font-size: 20px;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: $main-color;
+    border-color: $main-color;
+    color: white;
+  }
+}
