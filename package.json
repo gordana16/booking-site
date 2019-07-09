@@ -38,7 +38,7 @@
     "build-css": "node-sass-chokidar ./src/styles -o ./src/styles",
     "watch-css": "node-sass-chokidar ./src/styles -o ./src/styles --watch --recursive",
     "start-js": "react-scripts start",
-    "start": "npm start --prefix ../server",
+    "start": "npm start --prefix server",
     "start-dev": "npm-run-all -p watch-css start-js",
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
