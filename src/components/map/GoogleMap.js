@@ -5,36 +5,44 @@ class GoogleMap extends Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
+    this.map = null;
+    this.circle = null;
   }
 
   onScriptLoad = () => {
     const { address } = this.props;
-    const map = new window.google.maps.Map(this.ref.current, {
-      center: { lat: 0, lng: 0 },
-      zoom: 13
-    });
+    if (!this.map) {
+      this.map = new window.google.maps.Map(this.ref.current, {
+        center: { lat: 0, lng: 0 },
+        zoom: 13
+      });
+    }
 
     this.getLocation(address).then(
       location => {
-        map.setCenter(location);
-        new window.google.maps.Circle({
-          strokeColor: "#FF0000",
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: "#FF0000",
-          fillOpacity: 0.35,
-          map: map,
-          center: location,
-          radius: 500
-        });
+        this.map.setCenter(location);
+        if (!this.circle) {
+          this.circle = new window.google.maps.Circle({
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35,
+            map: this.map,
+            center: location,
+            radius: 500
+          });
+        } else {
+          this.circle.setCenter(location);
+        }
       },
       error => {
         const infowindow = new window.google.maps.InfoWindow({
           content: "<div>This location cannot currently be displayed</div>",
           maxWidth: 300
         });
-        map.setOptions({ disableDefaultUI: true });
-        infowindow.open(map);
+        this.map.setOptions({ disableDefaultUI: true });
+        infowindow.open(this.map);
         infowindow.setPosition({ lat: 0, lng: 0 });
       }
     );
@@ -72,6 +80,12 @@ class GoogleMap extends Component {
         this.onScriptLoad();
       });
     } else {
+      this.onScriptLoad();
+    }
+  }
+  componentDidUpdate(prevProps) {
+    const { address } = this.props;
+    if (address !== prevProps.address) {
       this.onScriptLoad();
     }
   }

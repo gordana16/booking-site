@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { ToastContainer } from "react-toastify";
 import { fetchRental } from "../../actions";
 import RentalDetailInfo from "./RentalDetailInfo";
+import RentalDetailUpdate from "./RentalDetailUpdate";
 import GoogleMap from "../map/GoogleMap";
 import Booking from "../booking/Booking";
 
@@ -21,14 +23,35 @@ class RentalDetail extends Component {
     this.forceUpdate();
   }
 
+  renderRentalDetail() {
+    const { isUpdate } = this.props.location.state || false;
+    if (isUpdate)
+      return (
+        <div className="col-md-12">
+          <RentalDetailUpdate />{" "}
+        </div>
+      );
+    return (
+      <React.Fragment>
+        <div className="col-md-8">
+          <RentalDetailInfo />
+        </div>
+        <div className="col-md-4">
+          <Booking />
+        </div>
+      </React.Fragment>
+    );
+  }
+
   render() {
     const { rental } = this.props;
-
-    if (!rental || !rental.bookings) {
+    if (!rental || !rental.bookings || rental.isUpdating) {
       return <div>Loading...</div>;
     }
+
     return (
       <div className="container" id="rentalDetails">
+        <ToastContainer />
         <div className="upper-section">
           <div className="row">
             <div className="col-md-6">
@@ -50,14 +73,7 @@ class RentalDetail extends Component {
           </div>
         </div>
         <div className="details-section">
-          <div className="row">
-            <div className="col-md-8">
-              <RentalDetailInfo rental={rental} />
-            </div>
-            <div className="col-md-4">
-              <Booking />
-            </div>
-          </div>
+          <div className="row">{this.renderRentalDetail()}</div>
         </div>
       </div>
     );

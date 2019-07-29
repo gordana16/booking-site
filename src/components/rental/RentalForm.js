@@ -1,13 +1,24 @@
 import React from "react";
-import { Field, reduxForm } from "redux-form";
+import { Field, reduxForm, isDirty } from "redux-form";
+import { connect } from "react-redux";
 import FormInput from "../shared/form/FormInput";
 import FormTextArea from "../shared/form/FormTextArea";
 import FormSelect from "../shared/form/FormSelect";
 import FormFileUpload from "../shared/form/FormFileUpload";
 import ResError from "../shared/form/ResError";
+import { toUpperCase } from "../../helpers";
 
-const RentalCreateForm = props => {
-  const { handleSubmit, submitCb, options, errors } = props;
+const RentalForm = props => {
+  const {
+    handleSubmit,
+    submitCb,
+    options,
+    errors,
+    valid,
+    submitting,
+    pristine
+  } = props;
+
   return (
     <form onSubmit={handleSubmit(submitCb)}>
       <Field
@@ -30,6 +41,7 @@ const RentalCreateForm = props => {
         type="text"
         label="City"
         className="form-control"
+        normalize={toUpperCase}
         component={FormInput}
       />
       <Field
@@ -37,6 +49,7 @@ const RentalCreateForm = props => {
         type="text"
         label="Street"
         className="form-control"
+        normalize={toUpperCase}
         component={FormInput}
       />
       <Field
@@ -75,15 +88,50 @@ const RentalCreateForm = props => {
         component={FormInput}
       />
 
-      <button className="btn btn-bwm btn-form" type="submit">
-        Create Rental
+      <button
+        className="btn btn-bwm btn-form"
+        type="submit"
+        disabled={!valid || pristine || submitting}
+      >
+        Submit Rental
       </button>
       <ResError errors={errors} />
     </form>
   );
 };
 
-export default reduxForm({
-  form: "rentalCreateForm",
-  initialValues: { shared: false, category: "apartment" }
-})(RentalCreateForm);
+const getDirtyFields = (state, initFields) => {
+  const fields = {};
+  if (initFields) {
+    Object.keys(initFields).forEach(
+      key => (fields[key] = isDirty("rentalForm")(state, key))
+    );
+  }
+  return fields;
+};
+
+const validate = values => {
+  const errors = {};
+
+  if (values.bedrooms && values.bedrooms <= 0) {
+    errors.bedrooms = "Please enter a valid number of bedrooms";
+  }
+
+  if (values.dailyRate && values.dailyRate <= 0) {
+    errors.dailyRate = "Please enter a valid amount";
+  }
+
+  return errors;
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    dirtyFields: getDirtyFields(state, ownProps.initialValues)
+  };
+};
+const formWrapped = reduxForm({
+  form: "rentalForm",
+  validate
+})(RentalForm);
+
+export default connect(mapStateToProps)(formWrapped);

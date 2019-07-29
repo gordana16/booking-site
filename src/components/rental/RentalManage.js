@@ -36,13 +36,14 @@ class RentalManage extends Component {
   }
 
   render() {
-    const { data: rentals, isFetching } = this.props.rentals;
+    const { data: rentals, errors, isFetching } = this.props.rentals;
+
     return (
       <section id="userRentals">
         <ToastContainer />
         <h1 className="page-title">My Rentals</h1>
         <div className="row">{this.renderUserRentalList(rentals)}</div>
-        {!isFetching && rentals.length === 0 && (
+        {!isFetching && errors.length === 0 && rentals.length === 0 && (
           <div className="alert alert-warning">
             You dont have any rentals currenty created. If you want advertised
             your property please follow this link.
