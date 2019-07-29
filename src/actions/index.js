@@ -8,6 +8,9 @@ import {
   FETCH_RENTAL_BY_ID_INIT,
   FETCH_RENTAL_BY_ID_SUCCESS,
   FETCH_RENTAL_BY_ID_FAIL,
+  UPDATE_RENTAL_INIT,
+  UPDATE_RENTAL_SUCCESS,
+  UPDATE_RENTAL_FAIL,
   FETCH_USER_BOOKINGS_INIT,
   FETCH_USER_BOOKINGS_SUCCESS,
   FETCH_USER_BOOKINGS_FAIL,
@@ -18,6 +21,11 @@ import {
 
 const axiosInstance = axiosService.getInstance();
 
+function getErrorDescription(rejected) {
+  return rejected.response
+    ? rejected.response.data.errors || rejected.response.statusText
+    : rejected.message;
+}
 //rental actions
 export const fetchRentals = city => {
   const url = city ? `/api/v1/rentals?city=${city}` : "/api/v1/rentals";
@@ -28,22 +36,29 @@ export const fetchRentals = city => {
       .then(response =>
         dispatch({ type: FETCH_RENTALS_SUCCESS, payload: response.data })
       )
-      .catch(({ response }) =>
-        dispatch({ type: FETCH_RENTALS_FAIL, payload: response.data.errors })
-      );
+      .catch(rejected => {
+        dispatch({
+          type: FETCH_RENTALS_FAIL,
+          payload: getErrorDescription(rejected)
+        });
+      });
   };
 };
 
 export const fetchUserRentals = () => {
   return dispatch => {
     dispatch({ type: FETCH_RENTALS_INIT });
+
     return axiosInstance
       .get("/rentals/manage")
       .then(response =>
         dispatch({ type: FETCH_RENTALS_SUCCESS, payload: response.data })
       )
-      .catch(({ response }) =>
-        dispatch({ type: FETCH_RENTALS_FAIL, payload: response.data.errors })
+      .catch(rejected =>
+        dispatch({
+          type: FETCH_RENTALS_FAIL,
+          payload: getErrorDescription(rejected)
+        })
       );
   };
 };
@@ -55,16 +70,20 @@ export const fetchRental = id => dispatch => {
     .then(response =>
       dispatch({ type: FETCH_RENTAL_BY_ID_SUCCESS, payload: response.data })
     )
-    .catch(({ response }) =>
-      dispatch({ type: FETCH_RENTAL_BY_ID_FAIL, payload: response.data.errors })
+    .catch(rejected =>
+      dispatch({
+        type: FETCH_RENTAL_BY_ID_FAIL,
+        payload: getErrorDescription(rejected)
+      })
     );
 };
+
 export const createRental = rentalData => {
   return axiosInstance
     .post("/rentals/", { ...rentalData })
     .then(
       res => res.data,
-      ({ response }) => Promise.reject(response.data.errors)
+      rejected => Promise.reject(getErrorDescription(rejected))
     );
 };
 
@@ -73,7 +92,22 @@ export const deleteRental = id => {
     .delete(`/rentals/${id}`)
     .then(
       res => res.data,
-      ({ response }) => Promise.reject(response.data.errors)
+      rejected => Promise.reject(getErrorDescription(rejected))
+    );
+};
+
+export const updateRental = (id, rentalData) => dispatch => {
+  dispatch({ type: UPDATE_RENTAL_INIT });
+  return axiosInstance
+    .patch(`/rentals/${id}`, rentalData)
+    .then(response =>
+      dispatch({ type: UPDATE_RENTAL_SUCCESS, payload: response.data })
+    )
+    .catch(rejected =>
+      dispatch({
+        type: UPDATE_RENTAL_FAIL,
+        payload: getErrorDescription(rejected)
+      })
     );
 };
 
@@ -86,10 +120,10 @@ export const fetchUserBookings = () => {
       .then(response =>
         dispatch({ type: FETCH_USER_BOOKINGS_SUCCESS, payload: response.data })
       )
-      .catch(({ response }) =>
+      .catch(rejected =>
         dispatch({
           type: FETCH_USER_BOOKINGS_FAIL,
-          payload: response.data.errors
+          payload: getErrorDescription(rejected)
         })
       );
   };
@@ -101,7 +135,7 @@ export const register = userData => {
     .post("/api/v1/users/register", { ...userData })
     .then(
       res => res.data,
-      ({ response }) => Promise.reject(response.data.errors)
+      rejected => Promise.reject(getErrorDescription(rejected))
     );
 };
 
@@ -131,14 +165,19 @@ export const checkAuthStatus = () => {
 
 export const login = userData => {
   return dispatch => {
-    return axios
-      .post("/api/v1/users/auth", { ...userData })
-      .then(res => res.data)
-      .then(token => {
-        authService.saveToken(token);
-        dispatch(loginSuccess());
-      })
-      .catch(({ response }) => dispatch(loginFailure(response.data.errors)));
+    return (
+      axios
+        .post("/api/v1/users/auth", { ...userData })
+        .then(res => res.data)
+        .then(token => {
+          authService.saveToken(token);
+          dispatch(loginSuccess());
+        })
+        // .catch(({ response }) => dispatch(loginFailure(response.data.errors)));
+        .catch(rejected =>
+          dispatch(loginFailure(getErrorDescription(rejected)))
+        )
+    );
   };
 };
 
@@ -153,5 +192,5 @@ export const createBooking = booking => {
   return axiosInstance
     .post("/bookings", booking)
     .then(res => res.data)
-    .catch(({ response }) => Promise.reject(response.data.errors));
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
 };

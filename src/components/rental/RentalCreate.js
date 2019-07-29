@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import RentalCreateForm from "./RentalCreateForm";
+import RentalForm from "./RentalForm";
 import { createRental } from "../../actions";
 
 class RentalCreate extends Component {
@@ -15,7 +15,7 @@ class RentalCreate extends Component {
   }
   createRental(rentalData) {
     createRental(rentalData).then(
-      rental => this.setState({ redirect: true }),
+      () => this.setState({ redirect: true }),
       errors => this.setState({ errors })
     );
   }
@@ -30,9 +30,10 @@ class RentalCreate extends Component {
           <div className="row">
             <div className="col-md-5">
               <h1>Create Rental</h1>
-              <RentalCreateForm
+              <RentalForm
                 submitCb={this.createRental}
                 options={this.categoryOptions}
+                initialValues={{ shared: false, category: "apartment" }}
                 errors={errors}
               />
             </div>

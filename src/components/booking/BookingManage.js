@@ -16,12 +16,12 @@ class BookingManage extends Component {
   }
 
   render() {
-    const { data: bookings, isFetching } = this.props.bookings;
+    const { data: bookings, errors, isFetching } = this.props.bookings;
     return (
       <section id="userBookings">
         <h1 className="page-title">My Bookings</h1>
         <div className="row">{this.renderBookingCards(bookings)}</div>
-        {!isFetching && bookings.length === 0 && (
+        {!isFetching && errors.length === 0 && bookings.length === 0 && (
           <div className="alert alert-warning">
             You have no bookings created go to rentals section and book your
             place today.
