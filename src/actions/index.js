@@ -194,3 +194,12 @@ export const createBooking = booking => {
     .then(res => res.data)
     .catch(rejected => Promise.reject(getErrorDescription(rejected)));
 };
+
+export const uploadImage = image => {
+  const formData = new FormData();
+  formData.append("image", image);
+  return axiosInstance
+    .post("/image-upload", formData)
+    .then(res => res.data.imgUrl)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};

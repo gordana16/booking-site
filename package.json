@@ -30,6 +30,7 @@
     "react": "^16.8.6",
     "react-bootstrap-daterangepicker": "^4.1.0",
     "react-dom": "^16.4.0",
+    "react-image-crop": "^8.2.0",
     "react-redux": "^6.0.1",
     "react-responsive-modal": "^4.0.1",
     "react-router-dom": "^4.3.1",
