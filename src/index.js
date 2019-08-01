@@ -8,6 +8,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import "font-awesome/css/font-awesome.min.css";
 import "react-toastify/dist/ReactToastify.css";
+import "react-image-crop/dist/ReactCrop.css";
 import { createStore, applyMiddleware, compose } from "redux";
 import reduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
