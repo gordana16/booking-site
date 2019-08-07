@@ -3,6 +3,78 @@ const { normalizeErrors } = require("../helpers/mongoose");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 
+exports.getUser = (req, res) => {
+  const reqUserId = req.params.id;
+  const user = res.locals.user;
+
+  if (reqUserId === user.id) {
+    //display all
+    User.findById(reqUserId)
+      .select("-stripeCustomerId -password -rentals -bookings -id")
+      .exec((err, foundUser) => {
+        if (err) {
+          if (err) {
+            return res
+              .status(422)
+              .send({ errors: normalizeErrors(err.errors) });
+          }
+        }
+        return res.json(foundUser);
+      });
+  } else {
+    //restrict some data
+    User.findById(reqUserId)
+      .select("-balance -stripeCustomerId -password -rentals -bookings -_id")
+      .exec((err, foundUser) => {
+        if (err) {
+          if (err) {
+            return res
+              .status(422)
+              .send({ errors: normalizeErrors(err.errors) });
+          }
+        }
+        return res.json(foundUser);
+      });
+  }
+};
+
+exports.updateUserDetails = (req, res) => {
+  const reqUserId = req.params.id;
+  const user = res.locals.user;
+  let userData = req.body;
+
+  if (reqUserId !== user.id) {
+    return res.status(422).send({
+      errors: [
+        {
+          title: "Not authorized",
+          detail: "You are not allowed to update user date"
+        }
+      ]
+    });
+  }
+
+  User.findById(reqUserId)
+    .select("-stripeCustomerId -password -rentals -bookings -balance")
+    .exec((err, foundUser) => {
+      if (err) {
+        return res.status(422).send({ errors: normalizeErrors(err.errors) });
+      }
+      if (userData.password) {
+        //dont't update password this way
+        const { password, ...updateData } = userData;
+        userData = updateData;
+      }
+
+      User.updateOne({ _id: foundUser._id }, { $set: { ...userData } }, err => {
+        if (err) {
+          return res.status(422).send({ errors: normalizeErrors(err.errors) });
+        }
+        return res.json(foundUser);
+      });
+    });
+};
+
 exports.auth = (req, res) => {
   const { email, password } = req.body;
 

@@ -1,0 +1,17 @@
+import React, { Component } from "react";
+import { Elements } from "react-stripe-elements";
+import CheckoutForm from "./CheckoutForm";
+
+class Payment extends Component {
+  render() {
+    return (
+      <div className="payment">
+        <Elements>
+          <CheckoutForm {...this.props} />
+        </Elements>
+      </div>
+    );
+  }
+}
+
+export default Payment;

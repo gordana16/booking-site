@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  firstname: String,
+  lastname: String,
+  location: String,
+  phone: String,
   username: {
     type: String,
     required: "Username is required",
@@ -25,6 +29,8 @@ const userSchema = new Schema({
     min: [4, "Too short, min is 4 characters"],
     max: [32, "Too long, max is 32 characters"]
   },
+  stripeCustomerId: String,
+  balance: { type: Number, default: 0 },
   rentals: [{ type: Schema.Types.ObjectId, ref: "Rental" }],
   bookings: [{ type: Schema.Types.ObjectId, ref: "Booking" }]
 });

@@ -2,18 +2,23 @@ import React, { Component } from "react";
 import Modal from "react-responsive-modal";
 import { createBooking } from "../../actions";
 import ResError from "../shared/form/ResError";
+import Payment from "../payment/Payment";
 
 class BookingModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      paymentToken: "",
       errors: []
     };
+
+    this.setPaymentToken = this.setPaymentToken.bind(this);
   }
 
   handleReservation() {
     const { open, onBooked, ...booking } = this.props;
-    createBooking(booking)
+    const { paymentToken } = this.state;
+    createBooking({ ...booking, paymentToken: paymentToken })
       .then(onBooked)
       .catch(errors => {
         this.setState({ errors });
@@ -22,6 +27,10 @@ class BookingModal extends Component {
 
   resetErrors() {
     this.setState({ errors: [] });
+  }
+
+  setPaymentToken(paymentToken) {
+    this.setState({ paymentToken });
   }
 
   render() {
@@ -34,6 +43,7 @@ class BookingModal extends Component {
       open,
       closeModal
     } = this.props;
+    const { paymentToken } = this.state;
     return (
       <Modal
         open={open}
@@ -53,12 +63,16 @@ class BookingModal extends Component {
           <p>
             Price: <em>{days * dailyRate}$ </em>
           </p>
+          <Payment setPaymentToken={this.setPaymentToken} />
           <p>Do you confirm your booking for selected days?</p>
         </div>
         <ResError errors={this.state.errors} />
         <div className="modal-footer">
           <button
-            disabled={this.state.errors && this.state.errors.length > 0}
+            disabled={
+              !paymentToken ||
+              (this.state.errors && this.state.errors.length > 0)
+            }
             type="button"
             className="btn btn-bwm"
             onClick={() => this.handleReservation()}
