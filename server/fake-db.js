@@ -1,6 +1,7 @@
 const Rental = require("./models/rental");
 const User = require("./models/user");
 const Booking = require("./models/booking");
+const Payment = require("./models/payment");
 const fakeDbData = require("./data.json");
 
 class FakeDb {
@@ -12,6 +13,7 @@ class FakeDb {
     await User.deleteMany();
     await Rental.deleteMany();
     await Booking.deleteMany();
+    await Payment.deleteMany();
   }
   async pushDataToDb() {
     await this.cleanDb();

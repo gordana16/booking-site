@@ -3,12 +3,25 @@ import { Link } from "react-router-dom";
 import { pretifyDate, toUpperCase } from "../../helpers";
 
 const BookingCard = props => {
-  const { booking } = props;
+  const { booking, payment, paymentBtns } = props;
+
   return (
     <div className="col-md-4">
       <div className="card text-center">
         <div className="card-header">
-          {booking.rental ? booking.rental.category : "Deleted Rental"}
+          {!payment && (
+            <div className="d-flex justify-content-center align-items-center">
+              {booking.status === "declined" && (
+                <span className="badge badge-danger align-self-start">
+                  Declined
+                </span>
+              )}
+              <span>
+                {booking.rental ? booking.rental.category : "Deleted Rental"}
+              </span>
+            </div>
+          )}
+          {payment && `Booking Made by User ${payment.fromUser.username}`}
         </div>
         <div className="card-block">
           {booking.rental && (
@@ -17,19 +30,24 @@ const BookingCard = props => {
                 {booking.rental.title} -{toUpperCase(booking.rental.city)}
               </h4>
               <p className="card-text booking-desc">
-                {booking.rental.description}
+                {!payment && booking.rental.description}
               </p>
             </div>
           )}
 
           <p className="card-text booking-days">
-            {pretifyDate(booking.startAt)} -{pretifyDate(booking.endAt)}|
+            {pretifyDate(booking.startAt)} -{pretifyDate(booking.endAt)} |{" "}
             {booking.days} days
           </p>
           <p className="card-text booking-price">
             <span>Price: </span>
-            <span className="booking-price-value">{booking.totalPrice} $</span>
+            <span className="booking-price-value">
+              {payment ? payment.amount / 100 : booking.totalPrice} $
+            </span>
           </p>
+          {payment && (
+            <p className="card-text payment-status">Status: {payment.status}</p>
+          )}
           {booking.rental && (
             <Link className="btn btn-bwm" to={`/rentals/${booking.rental._id}`}>
               Go to Rental
@@ -38,6 +56,10 @@ const BookingCard = props => {
         </div>
         <div className="card-footer text-muted">
           Created {pretifyDate(booking.createdAt)}
+          {payment &&
+            payment.status === "pending" &&
+            paymentBtns &&
+            paymentBtns(payment)}
         </div>
       </div>
     </div>

@@ -12,6 +12,7 @@ import "react-image-crop/dist/ReactCrop.css";
 import { createStore, applyMiddleware, compose } from "redux";
 import reduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
+import { StripeProvider } from "react-stripe-elements";
 import App from "./App";
 import reducers from "./reducers";
 
@@ -22,8 +23,10 @@ const store = createStore(
 );
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <StripeProvider apiKey="pk_test_2iG7iJngZ4BgTuIV2YlV7Bcu004Y2TpsK0">
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </StripeProvider>,
   document.getElementById("root")
 );

@@ -63,6 +63,9 @@ class Header extends Component {
             <Link className="dropdown-item" to="/bookings/manage">
               Manage Bookings
             </Link>
+            <Link className="dropdown-item" to="/user/profile">
+              User Profile
+            </Link>
           </div>
         </div>
       );

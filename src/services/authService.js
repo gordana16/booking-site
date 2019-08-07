@@ -26,6 +26,11 @@ class authService {
     const token = this.getToken();
     return this.decode(token).username;
   }
+  getUserId() {
+    const token = this.getToken();
+    return this.decode(token).userId;
+  }
+
   invalidateUser() {
     localStorage.removeItem("auth_token");
   }

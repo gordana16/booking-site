@@ -148,9 +148,12 @@ export const loginFailure = errors => {
 
 export const loginSuccess = () => {
   const username = authService.getUsername();
+  const userId = authService.getUserId();
+
   return {
     type: LOGIN_SUCCESS,
-    username
+    username,
+    userId
   };
 };
 
@@ -163,21 +166,30 @@ export const checkAuthStatus = () => {
   };
 };
 
+export const getUserDetails = userId => {
+  return axiosInstance
+    .get(`/users/${userId}`)
+    .then(res => res.data)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
+export const updateUserDetails = (userId, userData) => {
+  return axiosInstance
+    .patch(`/users/${userId}`, userData)
+    .then(res => res.data)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
 export const login = userData => {
   return dispatch => {
-    return (
-      axios
-        .post("/api/v1/users/auth", { ...userData })
-        .then(res => res.data)
-        .then(token => {
-          authService.saveToken(token);
-          dispatch(loginSuccess());
-        })
-        // .catch(({ response }) => dispatch(loginFailure(response.data.errors)));
-        .catch(rejected =>
-          dispatch(loginFailure(getErrorDescription(rejected)))
-        )
-    );
+    return axios
+      .post("/api/v1/users/auth", { ...userData })
+      .then(res => res.data)
+      .then(token => {
+        authService.saveToken(token);
+        dispatch(loginSuccess());
+      })
+      .catch(rejected => dispatch(loginFailure(getErrorDescription(rejected))));
   };
 };
 
@@ -201,5 +213,26 @@ export const uploadImage = image => {
   return axiosInstance
     .post("/image-upload", formData)
     .then(res => res.data.imgUrl)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
+export const getPendingPayments = () => {
+  return axiosInstance
+    .get("/payments")
+    .then(res => res.data)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
+export const acceptPayment = payment => {
+  return axiosInstance
+    .post("/payments/accept", payment)
+    .then(res => res.data)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
+export const declinePayment = payment => {
+  return axiosInstance
+    .post("/payments/decline", payment)
+    .then(res => res.data)
     .catch(rejected => Promise.reject(getErrorDescription(rejected)));
 };
