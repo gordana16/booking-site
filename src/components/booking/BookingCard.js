@@ -1,10 +1,24 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { pretifyDate, toUpperCase } from "../../helpers";
+import ReviewModal from "../review/ReviewModal";
+import { updateBookings } from "../../actions";
+import { isExpired } from "../../helpers";
 
 const BookingCard = props => {
-  const { booking, payment, paymentBtns } = props;
+  const { booking, bookings, payment, paymentBtns, updateBookings } = props;
 
+  const handleReviewCreated = review => {
+    const updatedBookings = bookings.map(current => {
+      if (current._id !== booking._id) {
+        return current;
+      } else {
+        return { ...current, review: review._id };
+      }
+    });
+    updateBookings(updatedBookings);
+  };
   return (
     <div className="col-md-4">
       <div className="card text-center">
@@ -53,6 +67,12 @@ const BookingCard = props => {
               Go to Rental
             </Link>
           )}
+          {!payment && !booking.review && isExpired(booking.endAt) && (
+            <ReviewModal
+              bookingId={booking._id}
+              onReviewCreated={review => handleReviewCreated(review)}
+            />
+          )}
         </div>
         <div className="card-footer text-muted">
           Created {pretifyDate(booking.createdAt)}
@@ -66,4 +86,11 @@ const BookingCard = props => {
   );
 };
 
-export default BookingCard;
+const mapStateToProps = state => {
+  return { bookings: state.bookings.data };
+};
+
+export default connect(
+  mapStateToProps,
+  { updateBookings }
+)(BookingCard);

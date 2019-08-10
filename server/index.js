@@ -9,12 +9,13 @@ const rentalRoutes = require("./routes/rentals");
 const userRoutes = require("./routes/users");
 const bookingRoutes = require("./routes/bookings");
 const paymentRoutes = require("./routes/payments");
+const reviewRoutes = require("./routes/reviews");
 const imageUploadRoutes = require("./routes/image-upload");
 
 mongoose.connect(config.DB_URI, { useNewUrlParser: true }).then(() => {
   if (process.env.NODE_ENV !== "production") {
     const fakeDb = new FakeDb();
-    //fakeDb.pushDataToDb();
+    // fakeDb.pushDataToDb();
   }
 });
 mongoose.set("useCreateIndex", true); //prevent warning
@@ -25,6 +26,7 @@ app.use("/api/v1/rentals", rentalRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/payments", paymentRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1", imageUploadRoutes);
 if (process.env.NODE_ENV === "production") {
   const appPath = path.join(__dirname, "..", "build");

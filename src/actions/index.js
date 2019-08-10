@@ -14,6 +14,7 @@ import {
   FETCH_USER_BOOKINGS_INIT,
   FETCH_USER_BOOKINGS_SUCCESS,
   FETCH_USER_BOOKINGS_FAIL,
+  UPDATE_BOOKINGS,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
   LOGOUT
@@ -207,6 +208,13 @@ export const createBooking = booking => {
     .catch(rejected => Promise.reject(getErrorDescription(rejected)));
 };
 
+export const updateBookings = bookings => {
+  return {
+    type: UPDATE_BOOKINGS,
+    bookings
+  };
+};
+
 export const uploadImage = image => {
   const formData = new FormData();
   formData.append("image", image);
@@ -233,6 +241,22 @@ export const acceptPayment = payment => {
 export const declinePayment = payment => {
   return axiosInstance
     .post("/payments/decline", payment)
+    .then(res => res.data)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
+//REVIEW FEATURES
+
+export const createReview = (reviewData, bookingId) => {
+  return axiosInstance
+    .post(`/reviews?bookingId=${bookingId}`, reviewData)
+    .then(res => res.data)
+    .catch(rejected => Promise.reject(getErrorDescription(rejected)));
+};
+
+export const getReviews = rentalId => {
+  return axiosInstance
+    .get(`/reviews?rentalId=${rentalId}`)
     .then(res => res.data)
     .catch(rejected => Promise.reject(getErrorDescription(rejected)));
 };

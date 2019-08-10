@@ -19,3 +19,9 @@ export const dateToUTC = (sDate, dateFormat = "Y/MM/DD") => {
 };
 
 export const pretifyDate = date => moment(date).format("MMM Do YY");
+
+export const isExpired = date => {
+  const dateNow = moment();
+  const dateReal = moment(date);
+  return dateReal.isBefore(dateNow);
+};
