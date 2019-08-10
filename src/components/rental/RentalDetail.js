@@ -36,6 +36,7 @@ class RentalDetail extends Component {
               <img
                 src="https://image.ibb.co/jw55Ex/def_face.jpg"
                 className="img img-rounded img-fluid"
+                alt=""
               />
               <p className="text-secondary text-center">{review.createdAt}</p>
             </div>
@@ -82,7 +83,6 @@ class RentalDetail extends Component {
   }
 
   renderRentalDetail() {
-    const { rental } = this.props;
     const { isUpdate } = this.props.location.state || false;
     if (isUpdate)
       return (
