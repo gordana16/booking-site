@@ -161,7 +161,6 @@ class Booking extends Component {
           open={openModal}
           closeModal={this.closeConfirmation}
           onBooked={this.onSuccessfulBooking}
-          // acceptPayment={() => <Payment />}
         />
       </div>
     );

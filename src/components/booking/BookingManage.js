@@ -18,6 +18,12 @@ class BookingManage extends Component {
     this.getPendingPayments();
   }
 
+  renderBookings(bookings) {
+    return bookings.map(booking => (
+      <BookingCard key={booking._id} booking={booking} />
+    ));
+  }
+
   getPendingPayments() {
     getPendingPayments()
       .then(pendingPayments => {
@@ -37,11 +43,6 @@ class BookingManage extends Component {
       };
     });
     this.setState({ pendingPayments: updatedPayments });
-  }
-  renderBookings(bookings) {
-    return bookings.map(booking => (
-      <BookingCard key={booking._id} booking={booking} />
-    ));
   }
 
   acceptPayment(payment) {
