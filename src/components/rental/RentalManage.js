@@ -64,7 +64,4 @@ class RentalManage extends Component {
 const mapStateToProps = state => {
   return { rentals: state.rentals };
 };
-export default connect(
-  mapStateToProps,
-  { fetchUserRentals }
-)(RentalManage);
+export default connect(mapStateToProps, { fetchUserRentals })(RentalManage);

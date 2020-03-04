@@ -108,7 +108,6 @@ class RentalDetail extends Component {
     if (!rental || !rental.bookings || rental.isUpdating) {
       return <div>Loading...</div>;
     }
-
     return (
       <div className="container" id="rentalDetails">
         <ToastContainer />
@@ -141,10 +140,9 @@ class RentalDetail extends Component {
 }
 
 const mapStateToProps = state => {
-  return { rental: state.rental.data };
+  return {
+    rental: state.rental.data
+  };
 };
 
-export default connect(
-  mapStateToProps,
-  { fetchRental }
-)(RentalDetail);
+export default connect(mapStateToProps, { fetchRental })(RentalDetail);
