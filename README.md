@@ -19,3 +19,8 @@ Frontend App has next features:
 * upload images to Amazon S3
 
 Backend Node.js app is responsible for handling bussiness data and storing them in MongoDB, Node.js also handles JWT user authentication on the server side.
+
+To view the application click the following link
+
+https://bookwithme-now.herokuapp.com
+
